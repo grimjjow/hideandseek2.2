@@ -4,6 +4,8 @@ import environment.Environment;
 import environment.Square;
 import assets.Vector;
 
+import java.util.Random;
+
 /**
  *
  * create a guard agent
@@ -44,11 +46,36 @@ public class Guard implements Agent {
 
     @Override
     public void updatePosition() {
-        for (Square square : this.env.getGrid().squares)
-            if (!square.walkable)
-                if (this.futurePosition().isIn(square))
-                    this.direction += Math.PI * 2 * Math.random();
+        boolean check = true;
 
+        while(check) {
+            for (Square square : this.env.getGrid().squares) {
+                if (!square.walkable)
+                    if (this.futurePosition().isIn(square)) {
+                        this.direction += Math.PI / 2;
+                        check = true;
+                        break;
+                        // System.out.println("The Guard tries to do an illegal move: x -> " + this.futurePosition().x + " y -> " + this.futurePosition().y);
+                    } else {
+                        check = false;
+                    }
+                /*if (square.explored) {
+                    if (this.futurePosition().isIn(square)) {
+                        Random r = new Random();
+                        if (r.nextBoolean()) {
+                            this.direction += Math.PI / 2 * Math.pow(-1, Math.round(Math.random()));
+                            check = true;
+                            break;
+                        }
+                        // System.out.println("The Guard tries to do an illegal move: x -> " + this.futurePosition().x + " y -> " + this.futurePosition().y);
+                    } else {
+                        check = false;
+                    }
+                }*/
+            }
+        }
+
+        System.out.println("The Guard has move: x -> " + this.futurePosition().x + " y -> " + this.futurePosition().y);
         this.position = this.futurePosition();
     }
 

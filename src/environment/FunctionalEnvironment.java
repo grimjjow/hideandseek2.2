@@ -34,7 +34,7 @@ public class FunctionalEnvironment implements Environment, Runnable {
                     new Vector(
                             area.getLeftB() + area.getWidth() * Math.random(),
                             area.getTopB() + area.getHeight() * Math.random()),
-                    2 * Math.PI * Math.random(),
+                    0,
                     5.0,
                     this)
             );

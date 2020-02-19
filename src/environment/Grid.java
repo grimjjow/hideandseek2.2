@@ -17,6 +17,7 @@ public class Grid extends JPanel {
         for (Area area : env.getAreas()) {
             this.squares.addAll(area.createSquares());
         }
+        System.out.println(this.squares.toString());
         this.env = env;
     }
 
