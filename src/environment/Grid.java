@@ -29,6 +29,9 @@ public class Grid extends JPanel {
 
         for (Square square : this.squares) {
             square.setType();
+            g2.setColor(Color.red);
+            g2.setFont(new Font("TimesRoman", Font.PLAIN, 7));
+            g2.drawString( "(" + (int)square.getCoordinates().x + "," + (int)square.getCoordinates().y + ")", (int)square.getCoordinates().x, (int)square.getCoordinates().y);
             for (Agent agent : this.env.getAgents()) {
                 if (agent.getPosition().isIn(square)) {
                     square.setType("Agent");

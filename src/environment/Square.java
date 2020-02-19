@@ -2,6 +2,8 @@ package environment;
 
 import assets.Vector;
 
+import java.util.ArrayList;
+
 public class Square {
 
     /**
@@ -39,5 +41,7 @@ public class Square {
     public Vector getCoordinates() {
         return coordinates;
     }
+
+
 
 }
