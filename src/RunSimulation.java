@@ -15,43 +15,9 @@ public class RunSimulation {
     public static void main(String[] args) throws IOException {
     	
     	Reader a = new Reader();
-    	a.readBufferedFile("C:\\Users\\Rudyw\\OneDrive\\Bureaublad\\hideandseek2.2-master\\src\\test.txt");
-    	
-    	 /* File file = new File("C:\\Users\\Rudyw\\OneDrive\\Bureaublad\\hideandseek2.2-master\\src\\test.txt"); 
-    	  
-    	  @SuppressWarnings("resource")
-    	  BufferedReader br = new BufferedReader(new FileReader(file)); 
-    	  
-    	  String st = null; 
-    	  String[] array = new String[1000];
-    	  int x = 0;
-    	  int wallCount = 0;
-    	  int teleportCount = 0;
-    	  int shadedCount = 0;
-    	  int textureCount = 0;
-    	  while ((st = br.readLine()) != null) {
-    		  if (st.contains("wall")){
-    			  wallCount++;
-    		  }
-    		  if (st.contains("teleport")){
-    			  teleportCount++;
-    		  }
-    		  if (st.contains("shaded")){
-    			  shadedCount++;
-    		  }
-    		  if (st.contains("texture")){
-    			  textureCount++;
-    		  }
-    		 //System.out.println(st.substring(st.lastIndexOf("=") + 2)); 
-    		 array[x] = st.substring(st.lastIndexOf("=") + 2);
-    		 x++;
-    	  }
-    	  
-    	  GameInfo a = new GameInfo(array,wallCount,teleportCount,shadedCount,textureCount);
-    	  System.out.println(a.getNumIntruders() + " " + Arrays.toString(a.convertTargetArea()));
-    	  
-    	  */
-    	/*  
+    	a.readBufferedFile("C:\\\\Users\\\\Rudyw\\\\OneDrive\\\\Bureaublad\\\\hideandseek2.2-master\\\\src\\\\test.txt");
+
+    	/*
         FunctionalEnvironment se = new FunctionalEnvironment();
         GraphicalEnvironment ge = new GraphicalEnvironment(se);
         Thread t1 = new Thread(se);

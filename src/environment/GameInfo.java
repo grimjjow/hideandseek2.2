@@ -94,6 +94,7 @@ public class GameInfo { //Object class that contains all the map info
 		for(int j=0;j<textureCount;j++) {
 			texture[j] = input[j+15+wallCount+teleportCount+shadedCount];
 		}
+
 	}	
 
 	//Getters and Setters && Converters

@@ -16,11 +16,12 @@ public abstract class Area {
          double bottomB) {
         this.leftB = Math.min(leftB, rightB);
         this.rightB = Math.max(leftB, rightB);
-        this.topB = Math.min(topB, bottomB);
-        this.bottomB = Math.max(bottomB, topB);
+        //BUG HERE!!! OOPSIEE make tempBoundaries, see Reader class for correct implementation
+        this.topB = Math.max(topB, bottomB);
+        this.bottomB = Math.min(bottomB, topB);
         this.type = "" + (this.getClass().getSimpleName());
     }
-
+    //needs an getBoundaries method to be called from Reader!
     public double getWidth() {
         return rightB - leftB;
     }

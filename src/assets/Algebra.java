@@ -81,4 +81,9 @@ public class Algebra {
         return res;
     }
 
+    public static double area(double x, double y){
+        //TODO add coverage for negative values
+        return x * y;
+    };
+
 }
