@@ -21,7 +21,8 @@ public class Guard implements Agent {
     private String name;
     private Environment env;
     private double visionRadius = 5.0;
-    private boolean justWalk = false;
+    private int justWalk = 0;
+    private int countRotations = 0;
 
     private ArrayList<Square> visitedSquares = new ArrayList<>();
 
@@ -53,7 +54,6 @@ public class Guard implements Agent {
         boolean check = true;
         Square currentSquare = null;
         Square nextSquare = null;
-        int countRotations = 0;
 
         while(check) {
             for (Square square : this.env.getGrid().squares) {
@@ -81,15 +81,25 @@ public class Guard implements Agent {
                 }*/
                 currentSquare = findSquare(getPosition());
                 nextSquare = findSquare(this.futurePosition());
-                if(this.justWalk) {
-                    if(!currentSquare.explored)
-                        this.justWalk = false;
-                    else {
+                if(this.justWalk == 1) {
+                    this.countRotations = 0;
+                    //System.out.println("Here");
+                    if(!nextSquare.explored && nextSquare.walkable) {
+                        System.out.println("Good");
+                        this.justWalk = 2;
+                    } else {
+                        //System.out.println("Not yet");
                         Random r = new Random();
-                        if(r.nextInt(100) == 0)
+                        if(r.nextInt(10000) == 53)
                             this.direction += Math.PI / 2;
                     }
                 } else {
+                    // we reach a unexplored square
+                    if(this.justWalk == 2) {
+                        this.direction -= Math.PI;
+                        System.out.println("odsnfoöugf");
+                        this.justWalk = 0;
+                    }
                     if (countRotations <= 4) {
                         if (currentSquare != nextSquare) {
                             if (nextSquare.explored) {
@@ -98,14 +108,38 @@ public class Guard implements Agent {
                                 check = true;
                                 break;
                             } else {
+                                this.countRotations = 0;
                                 check = false;
                             }
-                            // TODO: if all squares are visited: solve! -- no idea yet (worst case: random only not into a wall)
                         }
                     } else {
-                        this.justWalk = true;
+                        this.justWalk = 1;
                     }
                 }
+                /*if (currentSquare != nextSquare) {
+                    if (nextSquare.explored) {
+                        this.direction += Math.PI / 2;
+                        countRotations++;
+                        System.out.println("counter: " + countRotations);
+                        check = true;
+                        break;
+                    } else {
+                        check = false;
+                    }
+                    // TODO: if all squares are visited: solve! -- no idea yet (worst case: random only not into a wall)
+                }
+                    /*if (countRotations >= 4) {
+                        System.out.println("it goes into if");
+                        Square temp = findSquare(this.futurePosition());
+                        while(temp.explored) {
+
+                            this.direction += Math.PI / 2 * Math.pow(-1, Math.round(Math.random()));
+                            if(!findSquare(this.futurePosition()).explored){
+                                break;
+                            }
+
+                        }
+                }*/
             }
         }
 
@@ -204,10 +238,9 @@ public class Guard implements Agent {
 
         for(Square square: this.env.getGrid().squares){
 
-            if(square.explored){
+            if(!square.explored){
                 return false;
             }
-            allCovered = false;
         }
         return allCovered;
     }
