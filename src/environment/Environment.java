@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public interface Environment {
 
     double TIMESTEP = 10.0;
-    int MAP_WIDTH = 700;
-    int MAP_HEIGHT = 700;
+    int MAP_WIDTH = 720;
+    int MAP_HEIGHT = 720;
     int WAIT = 30;
 
     /**

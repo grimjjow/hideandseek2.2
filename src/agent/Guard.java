@@ -1,14 +1,14 @@
 package agent;
 
+import assets.Vector;
 import environment.Environment;
 import environment.Square;
-import assets.Vector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
- *
  * create a guard agent
  */
 
@@ -21,8 +21,9 @@ public class Guard implements Agent {
     private String name;
     private Environment env;
     private double visionRadius = 5.0;
-    private int justWalk = 0;
-    private int countRotations = 0;
+    private int[][] memory;
+    private int statecounter = 0;
+    private int[] cornerCoords = new int[2];
 
     private ArrayList<Square> visitedSquares = new ArrayList<>();
 
@@ -51,108 +52,26 @@ public class Guard implements Agent {
 
     @Override
     public void updatePosition() {
-        boolean check = true;
-        Square currentSquare = null;
-        Square nextSquare = null;
 
-        while(check) {
-            for (Square square : this.env.getGrid().squares) {
-                if (!square.walkable)
-                    if (this.futurePosition().isIn(square)) {
-                        this.direction += Math.PI / 2;
-                        check = true;
-                        break;
-                        // System.out.println("The Guard tries to do an illegal move: x -> " + this.futurePosition().x + " y -> " + this.futurePosition().y);
-                    } else {
-                        check = false;
-                    }
-                /*if (square.explored) {
-                    if (this.futurePosition().isIn(square)) {
-                        Random r = new Random();
-                        if (r.nextBoolean()) {
-                            this.direction += Math.PI / 2 * Math.pow(-1, Math.round(Math.random()));
-                            check = true;
-                            break;
-                        }
-                        // System.out.println("The Guard tries to do an illegal move: x -> " + this.futurePosition().x + " y -> " + this.futurePosition().y);
-                    } else {
-                        check = false;
-                    }
-                }*/
-                currentSquare = findSquare(getPosition());
-                nextSquare = findSquare(this.futurePosition());
-                if(this.justWalk == 1) {
-                    this.countRotations = 0;
-                    //System.out.println("Here");
-                    if(!nextSquare.explored && nextSquare.walkable) {
-                        System.out.println("Good");
-                        this.justWalk = 2;
-                    } else {
-                        //System.out.println("Not yet");
-                        Random r = new Random();
-                        if(r.nextInt(10000) == 53)
-                            this.direction += Math.PI / 2;
-                    }
-                } else {
-                    // we reach a unexplored square
-                    if(this.justWalk == 2) {
-                        this.direction -= Math.PI;
-                        System.out.println("odsnfoöugf");
-                        this.justWalk = 0;
-                    }
-                    if (countRotations <= 4) {
-                        if (currentSquare != nextSquare) {
-                            if (nextSquare.explored) {
-                                this.direction += Math.PI / 2;
-                                countRotations++;
-                                check = true;
-                                break;
-                            } else {
-                                this.countRotations = 0;
-                                check = false;
-                            }
-                        }
-                    } else {
-                        this.justWalk = 1;
-                    }
-                }
-                /*if (currentSquare != nextSquare) {
-                    if (nextSquare.explored) {
-                        this.direction += Math.PI / 2;
-                        countRotations++;
-                        System.out.println("counter: " + countRotations);
-                        check = true;
-                        break;
-                    } else {
-                        check = false;
-                    }
-                    // TODO: if all squares are visited: solve! -- no idea yet (worst case: random only not into a wall)
-                }
-                    /*if (countRotations >= 4) {
-                        System.out.println("it goes into if");
-                        Square temp = findSquare(this.futurePosition());
-                        while(temp.explored) {
+        switch (statecounter) {
+            case 0:
+                System.out.println("Just spawned");
+                this.cornerCoords = computerNearestCorner();
+                statecounter = 1;
+                goingToCorner();
+                break;
+            case 1:
+                System.out.println("Go to corner");
+                //System.out.println("Direction: "+ this.direction);
+                System.out.println("(x, y): "+ (int) this.position.x/30 + ", " + (int) this.position.y/30);
+                System.out.println("(x, y): "+ cornerCoords[0] + ", " + cornerCoords[1]);
+                if(goingToCorner())
+                    statecounter = 2;
 
-                            this.direction += Math.PI / 2 * Math.pow(-1, Math.round(Math.random()));
-                            if(!findSquare(this.futurePosition()).explored){
-                                break;
-                            }
-
-                        }
-                }*/
-            }
+                break;
         }
 
-
-        // create a list that stores visited squares
-        visitedSquares.add(nextSquare);
-        visitedSquares = deleteDoubles(visitedSquares);
-        
         this.position = this.futurePosition();
-
-        if(allIsExplored()){
-            System.out.println("THE SPACE IS EXPLORED");
-        }
     }
 
     public double getX() {
@@ -172,12 +91,11 @@ public class Guard implements Agent {
     }
 
     /**
-     *
      * @param position
      * @return Square, which has this position
      */
 
-    public Square findSquare(Vector position){
+    public Square findSquare(Vector position) {
 
         Square correctSquare = null;
 
@@ -195,9 +113,9 @@ public class Guard implements Agent {
         y = y - rest;
 
 
-        for(Square square : this.env.getGrid().squares){
+        for (Square square : this.env.getGrid().squares) {
 
-            if(square.getCoordinates().x == x && square.getCoordinates().y == y){
+            if (square.getCoordinates().x == x && square.getCoordinates().y == y) {
                 correctSquare = square;
             }
         }
@@ -207,10 +125,9 @@ public class Guard implements Agent {
 
 
     /**
-     *
      * removes duplicates from the list of squares
      */
-    public ArrayList<Square> deleteDoubles(ArrayList<Square> squares){
+    public ArrayList<Square> deleteDoubles(ArrayList<Square> squares) {
 
         ArrayList<Square> newSquares = new ArrayList<>();
 
@@ -229,19 +146,74 @@ public class Guard implements Agent {
     }
 
     /**
-     *
      * checks if everything is explored
      */
-    public boolean allIsExplored(){
+    public boolean allIsExplored() {
 
         boolean allCovered = true;
 
-        for(Square square: this.env.getGrid().squares){
+        for (Square square : this.env.getGrid().squares) {
 
-            if(!square.explored){
+            if (!square.explored) {
                 return false;
             }
         }
         return allCovered;
+    }
+
+    public int[] computerNearestCorner(){
+
+       int[] coords = new int[2];
+
+        // our position
+       int x =  (int)getPosition().x/30;
+       int y =  (int)getPosition().y/30;
+
+       int middleX = (this.env.getGrid().getWidth()/30)/2;
+       int middleY = (this.env.getGrid().getHeight()/30)/2;
+
+       // find corner
+       if(x>middleX && y>middleY){
+           coords = new int[]{22, 22};
+       }
+       else if(x>middleX && y<middleY){
+           coords = new int[]{22,1};
+       }
+       else if(x<middleX && y>middleY){
+           coords = new int[]{1, 22};
+       }
+       else{
+           coords = new int[]{1, 1};
+       }
+
+       return coords;
+    }
+
+    /**
+     * moves to closest corner
+     *
+     */
+    public boolean goingToCorner() {
+
+        if((int) position.x/30 != this.cornerCoords[0]){
+            if(position.x/30<this.cornerCoords[0]){
+                this.direction = 0;
+            }
+            else{
+                this.direction = Math.PI;
+            }
+            return false;
+        }
+
+        if((int) position.y/30 != this.cornerCoords[1]){
+            if(position.y/30<this.cornerCoords[1]){
+                this.direction = Math.PI/2;
+            }
+            else{
+                this.direction = 3*Math.PI/2;
+            }
+            return false;
+        }
+        return true;
     }
 }
