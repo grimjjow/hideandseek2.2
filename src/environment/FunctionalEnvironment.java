@@ -51,14 +51,14 @@ public class FunctionalEnvironment implements Environment, Runnable {
                 Grid.SQUARE_MEASURE,
                 Grid.SQUARE_MEASURE,
                 MAP_WIDTH - Grid.SQUARE_MEASURE,
-                MAP_HEIGHT - Grid.SQUARE_MEASURE
+                MAP_HEIGHT +20- Grid.SQUARE_MEASURE
         );
 
         this.areas.add(new Wall(
                 0,
                 0,
                 Grid.SQUARE_MEASURE,
-                MAP_HEIGHT)
+                MAP_HEIGHT+20)
         ); // left wall
         this.areas.add(new Wall(
                 Grid.SQUARE_MEASURE,
@@ -67,19 +67,34 @@ public class FunctionalEnvironment implements Environment, Runnable {
                 Grid.SQUARE_MEASURE)
         ); // top wall
         this.areas.add(new Wall(
-                MAP_WIDTH - Grid.SQUARE_MEASURE,
+                MAP_WIDTH-10,
                 Grid.SQUARE_MEASURE,
-                MAP_WIDTH,
-                MAP_HEIGHT)
+                MAP_WIDTH + 20,
+                MAP_HEIGHT+20)
         ); // right wall
         this.areas.add(new Wall(
                 Grid.SQUARE_MEASURE,
-                MAP_HEIGHT - Grid.SQUARE_MEASURE,
+                MAP_HEIGHT+20 - Grid.SQUARE_MEASURE,
                 MAP_WIDTH - Grid.SQUARE_MEASURE,
-                MAP_HEIGHT)
+                MAP_HEIGHT+20)
         ); // bottom wall
 
+
         this.areas.add(this.map);
+        //testhouse
+        this.areas.add(new Door(90,90,90+Grid.SQUARE_MEASURE,90+Grid.SQUARE_MEASURE,
+                true,true));
+        this.areas.add(new Wall(120,90,300,120));
+        this.areas.add(new Door(300,90,300+Grid.SQUARE_MEASURE,90+Grid.SQUARE_MEASURE,
+                false,false));
+        this.areas.add(new Wall(60,0,90,120));
+        this.areas.add(new Wall(330,0,360,120));
+
+        //testdoor if it is walkable
+        //this.areas.add(new Door(30,300,60,330,false,false));
+
+        //test SentryTower
+        this.areas.add(new SentryTower(330,330,360,360,false));
     }
 
     @Override

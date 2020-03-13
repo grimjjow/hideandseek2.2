@@ -4,6 +4,7 @@ import agent.Agent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
 public class Grid extends JPanel {
@@ -44,6 +45,12 @@ public class Grid extends JPanel {
                     SQUARE_MEASURE,
                     SQUARE_MEASURE
             );
+            Ellipse2D.Double circle = new Ellipse2D.Double(
+                    (int) square.getCoordinates().x,
+                    (int) square.getCoordinates().y,
+                    SQUARE_MEASURE,SQUARE_MEASURE
+            );
+
             g2.setPaint(Color.black);
             g2.draw(rectangle);
             if (square.explored) {
@@ -63,8 +70,17 @@ public class Grid extends JPanel {
                     g2.fill(rectangle);
                     break;
                 case "Agent":
+                    //Ellipse2D.Double agent = new Ellipse2D.Double(1,1);
                     g2.setPaint(Color.red);
+                    g2.fill(circle);
+                    break;
+                case "Door":
+                    g2.setPaint(Color.ORANGE);
                     g2.fill(rectangle);
+                    break;
+                case "SentryTower":
+                    g2.setPaint(Color.BLUE);
+                    g2.fill(circle);
                     break;
             }
         }
