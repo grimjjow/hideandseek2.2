@@ -133,6 +133,8 @@ public class Guard implements Agent {
                 System.out.println("Space explored.");
                 this.baseSpeed = 0;
                 break;
+
+
         }
 
         this.position = this.futurePosition();
