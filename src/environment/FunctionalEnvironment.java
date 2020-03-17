@@ -80,6 +80,13 @@ public class FunctionalEnvironment implements Environment, Runnable {
         ); // bottom wall
 
         this.areas.add(this.map);
+
+        this.areas.add(new Wall(
+                Grid.SQUARE_MEASURE,
+                150,
+                150,
+                120)
+        ); // bottom wall
     }
 
     @Override

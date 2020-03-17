@@ -54,6 +54,18 @@ public class Guard implements Agent {
 
     @Override
     public void updatePosition() {
+        if(memory == null)
+            this.memory = new int[(this.env.getGrid().getHeight()/30 + 1)][(this.env.getGrid().getWidth() / 30)];
+
+        // initalizing border walls as 2
+        for( int i =0; i<memory.length;i++){
+           memory[i][0] = 2;
+           memory[i][23] = 2;
+        }
+        for(int j = 0; j<memory[0].length;j++){
+            memory[0][j] = 2;
+            memory[23][j] = 2;
+        }
 
         switch (statecounter) {
             case 0:
@@ -75,23 +87,59 @@ public class Guard implements Agent {
                 // find direction
                 findDirection();
                 statecounter = 3;
-                counter = 3;
                 break;
 
             case 3:
                 Square currentSquare = findSquare(getPosition());
                 Square nextSquare = findSquare(this.futurePosition());
 
-                if(spaceExplorer() && currentSquare!=nextSquare && counter == 0){
-                   statecounter = 2;
+                if(spaceExplorer() && currentSquare!=nextSquare){
+                   statecounter = 3;
                 }
                 else{
-                    counter--;
+                    statecounter = 2;
                 }
+                if ((cornerCoords[0] == 1 && cornerCoords[1] == 1 && currentSquare.getCoordinates().x / 30 == 1 && currentSquare.getCoordinates().y / 30 == 22)
+                        || (cornerCoords[0] == 22 && cornerCoords[1] == 1 && currentSquare.getCoordinates().x / 30 == 22 && currentSquare.getCoordinates().y / 30 == 22)
+                        || (cornerCoords[0] == 1 && cornerCoords[1] == 22 && currentSquare.getCoordinates().x / 30 == 1 && currentSquare.getCoordinates().y / 30 == 1)
+                        || (cornerCoords[0] == 22 && cornerCoords[1] == 22 && currentSquare.getCoordinates().x / 30 == 22 && currentSquare.getCoordinates().y / 30 == 1)){
+
+                    boolean check = false;
+
+                    for (int i = 0; i < memory.length; i++) {
+                        for (int j = 0; j < memory[i].length; j++) {
+
+                            if (memory[i][j] == 0) {
+                                check = true;
+                                break;
+                            }
+                        }
+                        if (check) {
+                            break;
+                        }
+                    }
+                    if (check) {
+                        statecounter = 4;
+                    } else {
+                        statecounter = 5;
+                    }
+               }
+                break;
+
+            case 4:
+                break;
+
+            case 5:
+                System.out.println("Space explored.");
+                this.baseSpeed = 0;
                 break;
         }
 
         this.position = this.futurePosition();
+        memory[(int) ((findSquare(this.position).getCoordinates().y / 30))][(int) ((findSquare(this.position).getCoordinates().x / 30))] = 1;
+
+        for (int i = 0; i < memory.length; i++)
+            System.out.println(Arrays.toString(memory[i]));
     }
 
     public double getX() {
@@ -268,7 +316,13 @@ public class Guard implements Agent {
 
     public boolean spaceExplorer(){
 
-        if(!findSquare(this.futurePosition()).walkable || this.direction == 3*Math.PI/2 || this.direction == Math.PI/2){
+        Square temp = findSquare(this.futurePosition());
+
+        if(!temp.walkable || this.direction == 3*Math.PI/2 || this.direction == Math.PI/2){
+
+            if(!temp.walkable){
+                memory[(int) (temp.getCoordinates().y/30)][(int) (temp.getCoordinates().x/30)] = 2;
+            }
 
             if(left){
                 left = false;
