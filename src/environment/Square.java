@@ -18,7 +18,9 @@ public class Square {
     public Square(double x, double y, Area area) {
         this.coordinates = new Vector(x, y);
         this.area = area;
-        this.walkable = this.area.getType().equals("Map") || this.area.getType().equals("Door");
+        this.walkable = this.area.getType().equals("Map") ||
+                this.area.getType().equals("Door") ||
+                this.area.getType().equals("ShadedArea");
 
     }
 

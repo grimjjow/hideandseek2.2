@@ -35,4 +35,11 @@ public interface Agent {
      */
     String getName();
 
+    /**
+     * change the vision range of an agent
+     * @param radius (new vision radius)
+     *
+     */
+    void updatevisionRadius(double radius);
+
 }

@@ -70,7 +70,6 @@ public class Grid extends JPanel {
                     g2.fill(rectangle);
                     break;
                 case "Agent":
-                    //Ellipse2D.Double agent = new Ellipse2D.Double(1,1);
                     g2.setPaint(Color.red);
                     g2.fill(circle);
                     break;
@@ -81,6 +80,10 @@ public class Grid extends JPanel {
                 case "SentryTower":
                     g2.setPaint(Color.BLUE);
                     g2.fill(circle);
+                    break;
+                case  "ShadedArea":
+                    g2.setPaint(Color.cyan);
+                    g2.fill(rectangle);
                     break;
             }
         }

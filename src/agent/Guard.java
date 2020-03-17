@@ -20,9 +20,15 @@ public class Guard implements Agent {
     private double baseSpeed = 1.0;
     private String name;
     private Environment env;
-    private double visionRadius = 5.0;
+
+    private double normalvisionRadius = 5.0;
+    private  double reducedvisionRadius = 2.0;
+
+    private double visionRadius = normalvisionRadius;
     private int justWalk = 0;
     private int countRotations = 0;
+
+
 
     private ArrayList<Square> visitedSquares = new ArrayList<>();
 
@@ -141,6 +147,19 @@ public class Guard implements Agent {
                         }
                 }*/
             }
+            /*
+            //TODO Implementation of shadedareas, Reduce and increase visionRadius depending on currentSquare
+            if(currentSquare.getType().equals("ShadedArea")) {
+                updatevisionRadius(reducedvisionRadius);
+                System.out.println(currentSquare.getType().toString());
+            }
+
+            else if(!currentSquare.getType().equals("ShadedArea")){
+                updatevisionRadius(normalvisionRadius);
+                //System.out.println(currentSquare.getType().toString());
+            }
+
+             */
         }
 
 
@@ -169,6 +188,10 @@ public class Guard implements Agent {
 
     public double getDirection() {
         return direction;
+    }
+
+    public void updatevisionRadius(double radius){
+        this.visionRadius = radius;
     }
 
     /**

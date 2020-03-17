@@ -34,9 +34,10 @@ public class GraphicalEnvironment extends JFrame implements Environment, Runnabl
         add(buttonsPanel, BorderLayout.WEST);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(MAP_WIDTH, MAP_HEIGHT + 20);
+        setSize(MAP_WIDTH +200, MAP_HEIGHT + 100);
 
         setLocationByPlatform(true);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
     //TODO implement pauze thread using wait notify logic

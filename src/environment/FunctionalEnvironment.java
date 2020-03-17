@@ -94,7 +94,12 @@ public class FunctionalEnvironment implements Environment, Runnable {
         //this.areas.add(new Door(30,300,60,330,false,false));
 
         //test SentryTower
-        this.areas.add(new SentryTower(330,330,360,360,false));
+        this.areas.add(new SentryTower(390,90,420,120,false));
+
+        //add Shaded area
+        this.areas.add(new ShadedArea(90,30,330,90));
+        //test Shaded area is walkable
+        //this.areas.add(new ShadedArea(30,330,150,420));
     }
 
     @Override
