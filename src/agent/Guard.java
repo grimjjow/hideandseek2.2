@@ -24,6 +24,8 @@ public class Guard implements Agent {
     private int[][] memory;
     private int statecounter = 0;
     private int[] cornerCoords = new int[2];
+    private boolean left;
+    private int counter = 0;
 
     private ArrayList<Square> visitedSquares = new ArrayList<>();
 
@@ -68,6 +70,24 @@ public class Guard implements Agent {
                 if(goingToCorner())
                     statecounter = 2;
 
+                break;
+            case 2:
+                // find direction
+                findDirection();
+                statecounter = 3;
+                counter = 3;
+                break;
+
+            case 3:
+                Square currentSquare = findSquare(getPosition());
+                Square nextSquare = findSquare(this.futurePosition());
+
+                if(spaceExplorer() && currentSquare!=nextSquare && counter == 0){
+                   statecounter = 2;
+                }
+                else{
+                    counter--;
+                }
                 break;
         }
 
@@ -161,6 +181,11 @@ public class Guard implements Agent {
         return allCovered;
     }
 
+    /**
+     *
+     * @return int[] of the coordinates of the nearest corner
+     */
+
     public int[] computerNearestCorner(){
 
        int[] coords = new int[2];
@@ -198,9 +223,11 @@ public class Guard implements Agent {
         if((int) position.x/30 != this.cornerCoords[0]){
             if(position.x/30<this.cornerCoords[0]){
                 this.direction = 0;
+                left = false;
             }
             else{
                 this.direction = Math.PI;
+                left = true;
             }
             return false;
         }
@@ -214,6 +241,50 @@ public class Guard implements Agent {
             }
             return false;
         }
+        System.out.println("corner reached");
         return true;
+    }
+
+    public void findDirection(){
+
+        // left corner
+        if(left){
+            this.direction = 0;
+        } else{
+            this.direction = Math.PI;
+        }
+
+    }
+
+    public void moveUpDown(){
+
+        // bottom corner
+        if(this.cornerCoords[1] == 22){
+            this.direction = 3*Math.PI/2;
+        } else{
+            this.direction = Math.PI/2;
+        }
+    }
+
+    public boolean spaceExplorer(){
+
+        if(!findSquare(this.futurePosition()).walkable || this.direction == 3*Math.PI/2 || this.direction == Math.PI/2){
+
+            if(left){
+                left = false;
+            }
+            else{
+                left = true;
+            }
+            // bottom corner
+            if(this.cornerCoords[1] == 22){
+                this.direction = 3*Math.PI/2;
+            } else{
+                this.direction = Math.PI/2;
+            }
+            return true;
+        }
+
+        return false;
     }
 }
