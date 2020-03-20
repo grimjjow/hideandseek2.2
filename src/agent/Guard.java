@@ -24,8 +24,8 @@ public class Guard implements Agent {
     private int[][] memory;
     private int statecounter = 0;
     private int[] cornerCoords = new int[2];
-    private boolean left;
-    private int counter = 0;
+    private boolean left = true;
+    private boolean hello = false;
 
     private ArrayList<Square> visitedSquares = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class Guard implements Agent {
         if(memory == null)
             this.memory = new int[(this.env.getGrid().getHeight()/30 + 1)][(this.env.getGrid().getWidth() / 30)];
 
-        // initalizing border walls as 2
+     /*   // initalizing border walls as 2
         for( int i =0; i<memory.length;i++){
            memory[i][0] = 2;
            memory[i][23] = 2;
@@ -65,23 +65,23 @@ public class Guard implements Agent {
         for(int j = 0; j<memory[0].length;j++){
             memory[0][j] = 2;
             memory[23][j] = 2;
-        }
-
+        }*/
+        System.out.println("state: " + statecounter);
         switch (statecounter) {
             case 0:
                 System.out.println("Just spawned");
-                this.cornerCoords = computerNearestCorner();
+                //this.cornerCoords = computerNearestCorner();
                 statecounter = 1;
                 goingToCorner();
                 break;
             case 1:
                 System.out.println("Go to corner");
                 //System.out.println("Direction: "+ this.direction);
-                System.out.println("(x, y): "+ (int) this.position.x/30 + ", " + (int) this.position.y/30);
-                System.out.println("(x, y): "+ cornerCoords[0] + ", " + cornerCoords[1]);
                 if(goingToCorner())
                     statecounter = 2;
 
+                System.out.println("(x, y): "+ (int) this.position.x/30 + ", " + (int) this.position.y/30);
+                System.out.println("(x, y): "+ cornerCoords[0] + ", " + cornerCoords[1]);
                 break;
             case 2:
                 // find direction
@@ -94,12 +94,12 @@ public class Guard implements Agent {
                 Square nextSquare = findSquare(this.futurePosition());
 
                 if(spaceExplorer() && currentSquare!=nextSquare){
-                   statecounter = 3;
+                   statecounter = 2;
                 }
                 else{
-                    statecounter = 2;
+                    statecounter = 3;
                 }
-                if ((cornerCoords[0] == 1 && cornerCoords[1] == 1 && currentSquare.getCoordinates().x / 30 == 1 && currentSquare.getCoordinates().y / 30 == 22)
+              /*  if ((cornerCoords[0] == 1 && cornerCoords[1] == 1 && currentSquare.getCoordinates().x / 30 == 1 && currentSquare.getCoordinates().y / 30 == 22)
                         || (cornerCoords[0] == 22 && cornerCoords[1] == 1 && currentSquare.getCoordinates().x / 30 == 22 && currentSquare.getCoordinates().y / 30 == 22)
                         || (cornerCoords[0] == 1 && cornerCoords[1] == 22 && currentSquare.getCoordinates().x / 30 == 1 && currentSquare.getCoordinates().y / 30 == 1)
                         || (cornerCoords[0] == 22 && cornerCoords[1] == 22 && currentSquare.getCoordinates().x / 30 == 22 && currentSquare.getCoordinates().y / 30 == 1)){
@@ -123,7 +123,7 @@ public class Guard implements Agent {
                     } else {
                         statecounter = 5;
                     }
-               }
+               }*/
                 break;
 
             case 4:
@@ -140,8 +140,8 @@ public class Guard implements Agent {
         this.position = this.futurePosition();
         memory[(int) ((findSquare(this.position).getCoordinates().y / 30))][(int) ((findSquare(this.position).getCoordinates().x / 30))] = 1;
 
-        for (int i = 0; i < memory.length; i++)
-            System.out.println(Arrays.toString(memory[i]));
+       /* for (int i = 0; i < memory.length; i++)
+            System.out.println(Arrays.toString(memory[i]));*/
     }
 
     public double getX() {
@@ -236,7 +236,7 @@ public class Guard implements Agent {
      * @return int[] of the coordinates of the nearest corner
      */
 
-    public int[] computerNearestCorner(){
+/*    public int[] computerNearestCorner(){
 
        int[] coords = new int[2];
 
@@ -262,7 +262,7 @@ public class Guard implements Agent {
        }
 
        return coords;
-    }
+    }*/
 
     /**
      * moves to closest corner
@@ -270,7 +270,7 @@ public class Guard implements Agent {
      */
     public boolean goingToCorner() {
 
-        if((int) position.x/30 != this.cornerCoords[0]){
+       /* if((int) position.x/30 != this.cornerCoords[0]){
             if(position.x/30<this.cornerCoords[0]){
                 this.direction = 0;
                 left = false;
@@ -292,7 +292,22 @@ public class Guard implements Agent {
             return false;
         }
         System.out.println("corner reached");
-        return true;
+        return true;*/
+
+        if (!findSquare(this.futurePosition()).walkable && hello == false) {
+            hello = true;
+        } else if (!findSquare(this.futurePosition()).walkable && hello) {
+            cornerCoords[0] = (int) getPosition().x / 30;
+            cornerCoords[1] = (int) getPosition().y / 30;
+            this.direction = 0;
+            return true;
+        }
+        if(hello == false){
+            this.direction = Math.PI;
+        }else {
+            this.direction = Math.PI / 2;
+        }
+       return false;
     }
 
     public void findDirection(){
@@ -320,6 +335,7 @@ public class Guard implements Agent {
 
         Square temp = findSquare(this.futurePosition());
 
+
         if(!temp.walkable || this.direction == 3*Math.PI/2 || this.direction == Math.PI/2){
 
             if(!temp.walkable){
@@ -333,13 +349,11 @@ public class Guard implements Agent {
                 left = true;
             }
             // bottom corner
-            if(this.cornerCoords[1] == 22){
-                this.direction = 3*Math.PI/2;
-            } else{
-                this.direction = Math.PI/2;
-            }
+            this.direction = 3*Math.PI/2;
+
             return true;
         }
+
 
         return false;
     }
