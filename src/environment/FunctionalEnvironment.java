@@ -2,6 +2,7 @@ package environment;
 
 import agent.Agent;
 import agent.Guard;
+import agent.Guard3;
 import assets.Vector;
 
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ public class FunctionalEnvironment implements Environment, Runnable {
                             area.getLeftB() + area.getWidth() * Math.random(),
                             area.getTopB() + area.getHeight() * Math.random()),
                     0,
-                    5.0,
+                    45,
+                    6,
                     this)
             );
         }

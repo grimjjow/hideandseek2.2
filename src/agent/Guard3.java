@@ -13,7 +13,7 @@ import java.util.Random;
  */
 
 
-public class Guard implements Agent {
+public class Guard3 implements Agent {
 
     public Vector position;
     private double direction;
@@ -29,11 +29,11 @@ public class Guard implements Agent {
 
     private ArrayList<Square> visitedSquares = new ArrayList<>();
 
-    public Guard(String name,
-                 Vector position,
-                 double direction,
-                 double visionRadius,
-                 Environment env) {
+    public Guard3(String name,
+                  Vector position,
+                  double direction,
+                  double visionRadius,
+                  Environment env) {
         this.name = name;
         this.position = position;
         this.direction = direction;
