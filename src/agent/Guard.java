@@ -94,7 +94,8 @@ public class Guard implements Agent {
                 }
                 break;
         }
-
+        vectorsOfVision();
+        System.exit(0);
         this.position = this.futurePosition();
         //memory[(int) ((findSquare(this.position).getCoordinates().y / 30))][(int) ((findSquare(this.position).getCoordinates().x / 30))] = 1;
 
@@ -188,7 +189,7 @@ public class Guard implements Agent {
     /**
      *
      * @param temp
-     * @return walks
+     * @return explores the space until a wall is hitten
      */
 
     public boolean spaceExplorer(Square temp) {
@@ -209,29 +210,70 @@ public class Guard implements Agent {
 
         int agentX = (int) getPosition().x / 30;
         int agentY = (int) getPosition().y / 30;
-        double agentDirection = Math.toDegrees(getDirection());
+        //double agentDirection = Math.toDegrees(getDirection());
+        double agentDirection = Math.toDegrees(Math.PI/2);
 
         // of line y = slope*x+intercept
         double slope;
         double intercept;
 
 
-        for (double i = -(viewAngle/2); i < viewAngle / 2; i++) {
+        //for (double i = -(viewAngle/2); i < viewAngle / 2; i++) {
 
             // compute the lines (vectors)
             // get endpoints of the 45 vectors
-            double targetX = agentX+viewRange*Math.cos(agentDirection+i);
-            double targetY = agentY+viewRange*Math.sin(agentDirection+i);
-            slope = (agentY-targetY)/(agentX-targetX);
-            intercept = targetY-slope*targetX;
+            double targetX = agentX+viewRange*Math.cos(agentDirection+0);
+            double targetY = agentY+viewRange*Math.sin(agentDirection+0);
+            slope = (targetY-agentY)/(targetX-agentX);
+            intercept = targetY-(slope*targetX);
 
-            for(Square square : this.env.getGrid().squares){
+        System.out.println("target x: " + targetX +  " target Y: " + targetY);
 
-                //square.getCoordinates().x
+            for(Square square : this.env.getGrid().squares) {
 
+                double squareX = square.getCoordinates().x / 30;
+                double squareY = square.getCoordinates().y / 30;
+
+                // is on the line
+                if (Math.round(squareX * slope + intercept) == squareY) {
+
+                    if (agentX < targetX) {
+                        if (agentY < targetY) {
+                            //check if agentX <= squareX <= targetX and agentY <= squareY <= targetY
+                            if (squareX >= agentX && squareX <= targetX && squareY >= agentY && squareY <= targetY) {
+                                visibleSquares.add(square);
+                            }
+                        } else {
+                            //check if agentX <= squareX <= targetX and targetY <= squareY <= agentY
+                            if (squareX >= agentX && squareX <= targetX && squareY <= agentY && squareY >= targetY) {
+                                visibleSquares.add(square);
+                            }
+                        }
+                    } else {
+                        if (agentY < targetY) {
+                            //check if targetX <= squareX <= agentX and agentY <= squareY <= targetY
+                            if (squareX <= agentX && squareX >= targetX && squareY >= agentY && squareY <= targetY) {
+                                visibleSquares.add(square);
+                            }
+                        } else {
+                            //check if targetX <= squareX <= agentX and targetY <= squareY <= agentY
+                            if (squareX <= agentX && squareX >= targetX && squareY <= agentY && squareY >= targetY) {
+                                visibleSquares.add(square);
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println("size of list: " + visibleSquares.size());
+
+            for(Square square : visibleSquares){
+                System.out.println("Square: " + square.toString());
             }
 
-        }
+            System.out.println("agent x: " + getX() + " agent y " + getY());
+            System.out.println("the direction : " + agentDirection);
+
+        //}
 
 
     }
