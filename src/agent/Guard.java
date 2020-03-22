@@ -199,35 +199,36 @@ public class Guard implements Agent {
                 //memory[(int) (temp.getCoordinates().y/30)][(int) (temp.getCoordinates().x/30)] = 2;
             }*/
             left = !left;
-            this.direction = 3 * Math.PI / 2;
+            this.direction = 3 * Math.PI/2;
 
             return true;
         }
         return false;
     }
 
+
     public void vectorsOfVision() {
 
         int agentX = (int) getPosition().x / 30;
         int agentY = (int) getPosition().y / 30;
-        //double agentDirection = Math.toDegrees(getDirection());
-        double agentDirection = Math.toDegrees(Math.PI/2);
-
+        double agentDirection = getDirection();
         // of line y = slope*x+intercept
         double slope;
         double intercept;
 
 
-        //for (double i = -(viewAngle/2); i < viewAngle / 2; i++) {
+        for (double i = -(viewAngle/2); i < viewAngle/2; i++) {
 
             // compute the lines (vectors)
             // get endpoints of the 45 vectors
-            double targetX = agentX+viewRange*Math.cos(agentDirection+0);
-            double targetY = agentY+viewRange*Math.sin(agentDirection+0);
+            double targetX = agentX+viewRange*Math.cos(agentDirection+Math.toRadians(i));
+            double targetY = agentY+viewRange*Math.sin(agentDirection+Math.toRadians(i));
             slope = (targetY-agentY)/(targetX-agentX);
             intercept = targetY-(slope*targetX);
 
-        System.out.println("target x: " + targetX +  " target Y: " + targetY);
+            ArrayList<Square> vectorSquare = new ArrayList<>();
+
+            System.out.println("target x: " + targetX +  ", target Y: " + targetY);
 
             for(Square square : this.env.getGrid().squares) {
 
@@ -237,43 +238,83 @@ public class Guard implements Agent {
                 // is on the line
                 if (Math.round(squareX * slope + intercept) == squareY) {
 
-                    if (agentX < targetX) {
-                        if (agentY < targetY) {
-                            //check if agentX <= squareX <= targetX and agentY <= squareY <= targetY
-                            if (squareX >= agentX && squareX <= targetX && squareY >= agentY && squareY <= targetY) {
-                                visibleSquares.add(square);
+                    if(!visibleSquares.contains(square)) {
+                        if (agentX < targetX) {
+                            if (agentY < targetY) {
+                                //check if agentX <= squareX <= targetX and agentY <= squareY <= targetY
+                                if (squareX >= agentX && squareX <= targetX && squareY >= agentY && squareY <= targetY) {
+                                    vectorSquare.add(square);
+                                }
+                            } else {
+                                //check if agentX <= squareX <= targetX and targetY <= squareY <= agentY
+                                if (squareX >= agentX && squareX <= targetX && squareY <= agentY && squareY >= targetY) {
+                                    vectorSquare.add(square);
+                                }
                             }
                         } else {
-                            //check if agentX <= squareX <= targetX and targetY <= squareY <= agentY
-                            if (squareX >= agentX && squareX <= targetX && squareY <= agentY && squareY >= targetY) {
-                                visibleSquares.add(square);
-                            }
-                        }
-                    } else {
-                        if (agentY < targetY) {
-                            //check if targetX <= squareX <= agentX and agentY <= squareY <= targetY
-                            if (squareX <= agentX && squareX >= targetX && squareY >= agentY && squareY <= targetY) {
-                                visibleSquares.add(square);
-                            }
-                        } else {
-                            //check if targetX <= squareX <= agentX and targetY <= squareY <= agentY
-                            if (squareX <= agentX && squareX >= targetX && squareY <= agentY && squareY >= targetY) {
-                                visibleSquares.add(square);
+                            if (agentY < targetY) {
+                                //check if targetX <= squareX <= agentX and agentY <= squareY <= targetY
+                                if (squareX <= agentX && squareX >= targetX && squareY >= agentY && squareY <= targetY) {
+                                    vectorSquare.add(square);
+                                }
+                            } else {
+                                //check if targetX <= squareX <= agentX and targetY <= squareY <= agentY
+                                if (squareX <= agentX && squareX >= targetX && squareY <= agentY && squareY >= targetY) {
+                                    vectorSquare.add(square);
+                                }
                             }
                         }
                     }
                 }
             }
-            System.out.println("size of list: " + visibleSquares.size());
+            // iterate over all squares and remove everything behind walls
+            for(Square square : vectorSquare){
+                double squareX = 0;
+                double squareY = 0;
+                if(square.getType().equals("Wall")){
 
+                    for(Square square2 : vectorSquare) {
+                        double square2X = 0;
+                        double square2Y = 0;
+                        if (agentX < squareX) {
+                            if (agentY < squareY) {
+                                //check if agentX <= squareX <= targetX and agentY <= squareY <= targetY
+                                if (!(square2X >= agentX && square2X <= squareX && square2Y >= agentY && square2Y <= squareY)) {
+                                    vectorSquare.remove(square2);
+                                }
+                            } else {
+                                //check if agentX <= squareX <= targetX and targetY <= squareY <= agentY
+                                if (!(square2X >= agentX && square2X <= squareX && square2Y <= agentY && square2Y >= squareY)){
+                                    vectorSquare.remove(square2);
+                                }
+                            }
+                        } else {
+                            if (agentY < squareY) {
+                                //check if targetX <= squareX <= agentX and agentY <= squareY <= targetY
+                                if (!(square2X <= agentX && square2X >= squareX && square2Y >= agentY && square2Y <= squareY)) {
+                                    vectorSquare.remove(square2);
+                                }
+                            } else {
+                                //check if targetX <= squareX <= agentX and targetY <= squareY <= agentY
+                                if (!(square2X <= agentX && square2X >= squareX && square2Y <= agentY && square2Y >= squareY)) {
+                                    vectorSquare.remove(square2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            visibleSquares.addAll(vectorSquare);
+            System.out.println("size of list: " + visibleSquares.size());
             for(Square square : visibleSquares){
                 System.out.println("Square: " + square.toString());
             }
 
-            System.out.println("agent x: " + getX() + " agent y " + getY());
+            System.out.println("agent x: " + agentX + ", agent y: " + agentY);
             System.out.println("the direction : " + agentDirection);
 
-        //}
+        }
 
 
     }

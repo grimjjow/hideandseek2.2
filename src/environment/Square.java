@@ -22,7 +22,7 @@ public class Square {
     }
 
     public String toString() {
-        return "" + (int) this.coordinates.x + "_" + (int) this.coordinates.y + " is a " + this.type;
+        return "" + (int) this.coordinates.x/30 + "_" + (int) this.coordinates.y/30 + " is a " + this.type;
     }
 
     public String getType() {
